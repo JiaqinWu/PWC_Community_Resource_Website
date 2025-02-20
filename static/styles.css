@@ -1,0 +1,271 @@
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+/* Header Section - Ensures Title & Image are Centered */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Logo Styling */
+.logo {
+    width: 100px;  /* Adjust size of the logo */
+    height: auto;
+    margin-right: 15px;  /* Space between logo and title */
+    text-align: center;
+}
+
+/* Title Styling */
+.title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Introduction Paragraph */
+.intro {
+    font-size: 18px;
+    max-width: 800px;
+    margin: 15px auto 50px;  /* More space below */
+    line-height: 1.5;
+    color: #555;
+}
+
+/* Filter Section - Now Centered */
+.filter-container {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Filter Dropdown */
+.filter-dropdown {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    margin-bottom: 20px; /* Increased spacing below */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Ensure the map takes full space */
+.map-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Ensure the map section is centered */
+.map-container {
+    width: 80%;  /* Slightly larger for better visibility */
+    height: 600px;
+    border-radius: 10px;
+    overflow: hidden;
+
+    /* Centering */
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    margin: 0 auto; /* Ensures centering in its parent container */
+}
+
+/* Fix Folium's iframe size */
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block; /* Removes any inline spacing issues */
+}
+
+
+/* Centered Map Title */
+.map-title {
+    font-size: 24px;  /* Slightly smaller than main title */
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px; /* Adds space before the map */
+    color: #333;
+}
+
+/* Nearest Map Section */
+.nearest-map-section {
+    width: 90%;
+    margin: 30px auto;
+    text-align: center;
+}
+/* Nearest Map Section */
+.overview-map-section {
+    width: 90%;
+    margin: 30px auto;
+    text-align: center;
+}
+
+/* Search Section */
+.search-section {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.search-section input,
+.search-section select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search-btn {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Language Toggle Button */
+.language-switch {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.lang-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.lang-btn.active {
+    background-color: #0056b3;
+    font-weight: bold;
+}
+
+
+
+
+/* Heading (Filter) */
+h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+/* Contact Section */
+.contact-section {
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Contact Form */
+#contactForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Two Small Input Boxes Side by Side */
+.input-group {
+    display: flex;
+    gap: 30px; /* Space between inputs */
+    width: 100%;
+}
+
+.input-box {
+    flex: 2; /* Each input takes half width */
+    display: flex;
+    flex-direction: column;
+}
+
+#contactForm label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+}
+
+/* Input Fields */
+#contactForm input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Larger Textbox for Questions */
+#contactForm textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: vertical;
+    margin-top: 15px;
+    font-family: Arial, sans-serif; 
+}
+
+/* Contact Button */
+.contact-btn {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.contact-btn:hover {
+    background-color: #0056b3;
+}
+
+

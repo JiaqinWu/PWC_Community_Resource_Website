@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prince William County Resource Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- Language Toggle (Upper Right Corner) -->
+    <div class="language-switch">
+        <button onclick="setLanguage('en')" class="lang-btn active">English</button>
+        <button onclick="setLanguage('es')" class="lang-btn">Español</button>
+    </div>
+
+    <!-- Centered Header Section -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='pwc.jpg') }}" alt="PWC Logo" class="logo">
+        <h1 class="title" data-en="Prince William County Resource Map" data-es="Mapa de Recursos del Condado de Prince William">
+            Prince William County Resource Map
+        </h1>
+    </div>
+
+    <!-- Intro Paragraph -->
+    <p class="intro" data-en="Our goal is to create a user-friendly platform that helps residents of Prince William County easily locate essential community resources. Whether you're searching for food assistance, medical care, clothing, or other vital services, this interactive map allows individuals to find the support they need quickly and efficiently." 
+        data-es="Nuestro objetivo es crear una plataforma fácil de usar que ayude a los residentes del condado de Prince William a localizar fácilmente los recursos comunitarios esenciales. Ya sea que esté buscando asistencia alimentaria, atención médica, ropa u otros servicios vitales, este mapa interactivo permite a las personas encontrar el apoyo que necesitan de manera rápida y eficiente.">
+        Our goal is to create a user-friendly platform that helps residents of Prince William County easily locate essential community resources. Whether you're searching for food assistance, medical care, clothing, or other vital services, this interactive map allows individuals to find the support they need quickly and efficiently.
+    </p>
+
+    <!-- Overview Map -->
+    <div class="overview-map-section">
+        <h2 class="map-title" data-en="Overview Map" data-es="Mapa General">Overview Map</h2>
+        <div class="map-container">
+            {{ main_map | safe }}
+        </div>
+    </div>
+    
+    
+    <!-- Search Nearest Locations -->
+    <div class="search-section">
+        <h2 data-en="Find Nearest Services" data-es="Buscar Servicios Cercanos">Find Nearest Services</h2>
+        <form method="POST" action="/search">
+            <label for="user_address" data-en="Enter Your Address:" data-es="Ingrese su dirección:">Enter Your Address:</label>
+            <div class="location-input">
+                <input type="text" id="user_address" name="user_address" 
+                    placeholder="Enter your address..." 
+                    data-en="Enter your address..." data-es="Ingrese su dirección..." required>
+                <button type="button" onclick="getLocation()" class="location-btn">
+                    📍 <span data-en="Use My Location" data-es="Usar Mi Ubicación">Use My Location</span>
+                </button>
+            </div>
+
+            <label for="resource_type" data-en="Select Resource Type:" data-es="Seleccione Tipo de Recurso:">Select Resource Type:</label>
+            <select id="resource_type" name="resource_type">
+                {% for type in resource_types %}
+                    <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="search-btn" data-en="Search" data-es="Buscar">Search</button>
+        </form>
+    </div>
+
+
+    {% if error_message %}
+    <p class="error">{{ error_message }}</p>
+    {% endif %}
+
+    <!-- Nearest Locations Map -->
+    <div class="nearest-map-section">
+        <h2 class="map-title" data-en="Nearest Locations" data-es="Ubicaciones Más Cercanas">Nearest Locations</h2>
+        <div class="map-container">
+            {% if nearest_map %}
+                {{ nearest_map | safe }}
+            {% else %}
+                <p data-en="No search has been performed yet." data-es="Aún no se ha realizado ninguna búsqueda."></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Contact Us Section -->
+    <div class="contact-section">
+        <h2 data-en="Contact Us" data-es="Contáctenos">Contact Us</h2>
+        <p data-en="If you have any questions or concerns, feel free to reach out to us." 
+        data-es="Si tiene alguna pregunta o inquietud, no dude en comunicarse con nosotros.">
+            If you have any questions or concerns, feel free to reach out to us.
+        </p>
+        
+        <form id="contactForm" onsubmit="sendEmail(); return false;">
+            <div class="input-group">
+                <div class="input-box">
+                    <label for="name" data-en="Your Name:" data-es="Su Nombre:">Your Name:</label>
+                    <input type="text" id="name" name="name" 
+                        placeholder="Your name" 
+                        data-en="Your name" data-es="Su nombre" required>
+                </div>
+
+                <div class="input-box">
+                    <label for="phone" data-en="Phone Number:" data-es="Número de Teléfono:">Phone Number:</label>
+                    <input type="text" id="phone" name="phone" 
+                        placeholder="Your phone number" 
+                        data-en="Your phone number" data-es="Su número de teléfono" required>
+                </div>
+            </div>
+
+            <label for="message" data-en="What is your concern/question?" data-es="¿Cuál es su preocupación/pregunta?">What is your concern/question?</label>
+            <textarea id="message" name="message" 
+                    placeholder="Enter your message here..." 
+                    data-en="Enter your message here..." data-es="Ingrese su mensaje aquí..." required></textarea>
+
+            <button type="submit" class="contact-btn" data-en="Send Email" data-es="Enviar Correo Electrónico">Send Email</button>
+        </form>
+    </div>
+
+    <script>
+        function sendEmail() {
+            var name = document.getElementById("name").value;
+            var phone = document.getElementById("phone").value;
+            var message = document.getElementById("message").value;
+            
+            var email = "TYasin1@pwcgov.org"; // Your email
+            var subject = encodeURIComponent("New Inquiry from " + name);
+            var body = encodeURIComponent("Name: " + name + "\nPhone: " + phone + "\n\nConcern/Question:\n" + message);
+            
+            window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+        }
+
+        function setLanguage(lang) {
+            // Change text content dynamically
+            document.querySelectorAll("[data-en]").forEach(element => {
+                element.innerHTML = element.getAttribute(`data-${lang}`);
+            });
+
+            // Change placeholders dynamically
+            document.querySelectorAll("[placeholder]").forEach(element => {
+                element.placeholder = element.getAttribute(`data-${lang}`);
+            });
+
+            // Toggle active button styling
+            document.querySelectorAll(".lang-btn").forEach(button => {
+                button.classList.remove("active");
+            });
+            document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add("active");
+        }
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendCoordsToServer, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function sendCoordsToServer(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+
+            fetch("/get_address", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ latitude: lat, longitude: lon })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.address) {
+                    document.getElementById("user_address").value = data.address;
+                } else {
+                    alert("Could not retrieve address.");
+                }
+            })
+            .catch(error => {
+                alert("Error retrieving location: " + error);
+            });
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+
+
+
+</body>
+</html>
+
+
