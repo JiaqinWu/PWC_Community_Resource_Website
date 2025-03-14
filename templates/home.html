@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Overview Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <!-- Language Toggle Buttons (Upper Right Corner) -->
+    <div class="language-switch">
+        <button onclick="setLanguage('en')" class="lang-btn active">English</button>
+        <button onclick="setLanguage('es')" class="lang-btn">Español</button>
+    </div>
+
+    <!-- Full-width Narrative Section -->
+    <div class="narrative-container">
+        <img src="{{ url_for('static', filename='logo1.png') }}" alt="PWC Logo" class="logo">
+        <h1 class="page-title" data-en="Prince William County Community Resource Map" data-es="Mapa de Recursos Comunitarios del Condado de Prince William">
+            Prince William County Community Resource Map
+        </h1>
+
+        <p class="intro-text" 
+           data-en="Communities with greater resource access are proven to be safer and more secure. 
+                   OCS' Community Resource Map empowers residents to easily find vital services, promoting 
+                   long-term resilience, connectivity, and well-being across the County."
+           data-es="Las comunidades con mayor acceso a recursos han demostrado ser más seguras y protegidas.
+                   El Mapa de Recursos Comunitarios de OCS permite a los residentes encontrar fácilmente servicios esenciales, 
+                   promoviendo la resiliencia, la conectividad y el bienestar en todo el condado.">
+            Communities with greater resource access are proven to be safer and more secure. 
+            OCS' Community Resource Map empowers residents to easily find vital services, promoting 
+            long-term resilience, connectivity, and well-being across the County.
+        </p>
+
+        <p class="intro-text" 
+           data-en="OCS' Resource Map is a user-friendly tool designed to help you quickly locate essential resources, 
+                   from food assistance and medical care to clothing and other critical services.
+                   Explore available resources across the County using the Overview Map, or find the nearest support 
+                   options by entering your location in the Nearest Resources Map."
+           data-es="El Mapa de Recursos de OCS es una herramienta fácil de usar diseñada para ayudarle a encontrar rápidamente recursos esenciales, 
+                   desde asistencia alimentaria y atención médica hasta ropa y otros servicios fundamentales.
+                   Explore los recursos disponibles en todo el condado utilizando el Mapa General o encuentre las opciones de apoyo más cercanas 
+                   ingresando su ubicación en el Mapa de Recursos Más Cercanos.">
+            OCS' Resource Map is a user-friendly tool designed to help you quickly locate essential resources, 
+            from food assistance and medical care to clothing and other critical services.
+            Explore available resources across the County using the <strong>Overview Map</strong>, or find the nearest support 
+            options by entering your location in the <strong>Nearest Resources Map</strong>.
+        </p>
+    </div>
+
+
+
+    <div class="narrative-container">
+        <h1 class="page-title" data-en="Overview Map" data-es="Mapa General">Overview Map</h1>
+    </div>
+
+    <!-- 1:4 Layout Section -->
+    <div class="container">
+        <!-- Left Column: Filter Selection -->
+        <div class="left-column">
+            <form method="POST" class="filter-form">
+                <label for="categories" data-en="Filter by Categorie(s):" data-es="Filtrar por Categoría(s):">Filter by Categorie(s):</label>
+                <select name="categories" id="categories" multiple size="10">
+                    <option value="All" {% if "All" in selected_categories %}selected{% endif %} 
+                        data-en="All" data-es="Todos">All</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if category in selected_categories %}selected{% endif %}
+                            data-en="{{ category }}" data-es="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <!-- Right Column: Map -->
+        <div class="right-column">
+            <div class="map-container">
+                {{ main_map | safe }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-submit filter form when selection changes
+        document.getElementById("categories").addEventListener("change", function() {
+            this.form.submit();
+        });
+
+        // Function to switch between English and Spanish
+        function setLanguage(lang) {
+            document.querySelectorAll("[data-en]").forEach(element => {
+                element.innerHTML = element.getAttribute(`data-${lang}`);
+            });
+
+            // Change placeholders dynamically
+            document.querySelectorAll("[placeholder]").forEach(element => {
+                element.placeholder = element.getAttribute(`data-${lang}`);
+            });
+
+            // Toggle active button styling
+            document.querySelectorAll(".lang-btn").forEach(button => {
+                button.classList.remove("active");
+            });
+            document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add("active");
+        }
+    </script>
+</body>
+</html>

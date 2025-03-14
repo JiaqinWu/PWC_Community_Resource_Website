@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Find Nearest Services</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <!-- Language Toggle -->
+    <div class="language-switch">
+        <button onclick="setLanguage('en')" class="lang-btn active">English</button>
+        <button onclick="setLanguage('es')" class="lang-btn">Español</button>
+    </div>
+
+    <!-- Full-width Narrative Section -->
+    <div class="narrative-container">
+        <img src="{{ url_for('static', filename='logo1.png') }}" alt="PWC Logo" class="logo">
+        <h1 class="page-title" 
+            data-en="Nearest Resources Map" 
+            data-es="Mapa de Recursos Más Cercanos">
+            Nearest Resources Map
+        </h1>
+    </div>
+
+    <!-- 1:4 Layout Section -->
+    <div class="container">
+        <!-- Left Column: Filter Section (1) -->
+        <div class="left-column">
+            <form method="POST" class="search-form">
+                <label for="user_address" 
+                    data-en="Enter Address:" 
+                    data-es="Ingrese su dirección:">Enter Address:</label>
+                <div class="location-input">
+                    <input type="text" id="user_address" name="user_address" 
+                        placeholder="Enter your address..." 
+                        data-en="Enter your address..." 
+                        data-es="Ingrese su dirección..." required>
+                    <button type="button" onclick="getLocation()" class="location-btn">
+                        📍 <span data-en="Use My Location" data-es="Usar Mi Ubicación">Use My Location</span>
+                    </button>
+                </div>
+
+                <label for="resource_type" 
+                    data-en="Select Resource Type:" 
+                    data-es="Seleccione Tipo de Recurso:">Select Resource Type:</label>
+                <select name="resource_type">
+                    {% for type in resource_types %}
+                        <option value="{{ type }}">{{ type }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="search-btn" 
+                    data-en="Search" data-es="Buscar">Search</button>
+            </form>
+        </div>
+
+        <!-- Right Column: Map Section (4) -->
+        <div class="right-column">
+            <div class="map-container">
+                {% if nearest_map %}
+                    {{ nearest_map | safe }}
+                {% else %}
+                    <p data-en="No search has been performed yet." data-es="Aún no se ha realizado ninguna búsqueda."></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendCoordsToServer, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function sendCoordsToServer(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+
+            fetch("/get_address", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ latitude: lat, longitude: lon })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.address) {
+                    document.getElementById("user_address").value = data.address;
+                } else {
+                    alert("Could not retrieve address.");
+                }
+            })
+            .catch(error => {
+                alert("Error retrieving location: " + error);
+            });
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        function setLanguage(lang) {
+            // Change text dynamically
+            document.querySelectorAll("[data-en]").forEach(element => {
+                element.innerHTML = element.getAttribute(`data-${lang}`);
+            });
+
+            // Change placeholders dynamically
+            document.querySelectorAll("[placeholder]").forEach(element => {
+                element.placeholder = element.getAttribute(`data-${lang}`);
+            });
+
+            // Toggle active button styling
+            document.querySelectorAll(".lang-btn").forEach(button => {
+                button.classList.remove("active");
+            });
+            document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add("active");
+        }
+    </script>
+</body>
+</html>
+
+
+
+

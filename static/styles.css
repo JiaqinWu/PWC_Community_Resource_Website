@@ -1,4 +1,3 @@
-/* General Page Styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -10,262 +9,211 @@ body {
     width: 100%;
 }
 
-/* Header Section - Ensures Title & Image are Centered */
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
+/* Full-width Narrative Section */
+.narrative-container {
+    width: 90%;
+    max-width: 1000px;
+    margin-top: 30px;
     text-align: center;
 }
 
 /* Logo Styling */
 .logo {
-    width: 100px;  /* Adjust size of the logo */
+    width: 300px;  /* Adjust size of the logo */
     height: auto;
-    margin-right: 15px;  /* Space between logo and title */
+    margin-bottom: 20px;  /* Space between logo and title */
     text-align: center;
 }
 
-/* Title Styling */
-.title {
-    font-size: 32px;
-    font-weight: bold;
-    color: #333;
-}
-
-/* Introduction Paragraph */
-.intro {
-    font-size: 18px;
-    max-width: 800px;
-    margin: 15px auto 50px;  /* More space below */
-    line-height: 1.5;
-    color: #555;
-}
-
-/* Filter Section - Now Centered */
-.filter-container {
-    width: 100%;
-    max-width: 350px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Filter Dropdown */
-.filter-dropdown {
-    width: 100%;
-    padding: 12px;
-    font-size: 18px;
-    margin-bottom: 20px; /* Increased spacing below */
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* Ensure the map takes full space */
-.map-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+/* Title */
+.page-title {
+    font-size: 26px;
     margin-top: 10px;
-}
-
-/* Ensure the map section is centered */
-.map-container {
-    width: 80%;  /* Slightly larger for better visibility */
-    height: 600px;
-    border-radius: 10px;
-    overflow: hidden;
-
-    /* Centering */
-    display: flex;
-    justify-content: center; /* Centers horizontally */
-    align-items: center; /* Centers vertically */
-    margin: 0 auto; /* Ensures centering in its parent container */
-}
-
-/* Fix Folium's iframe size */
-.map-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block; /* Removes any inline spacing issues */
-}
-
-
-/* Centered Map Title */
-.map-title {
-    font-size: 24px;  /* Slightly smaller than main title */
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px; /* Adds space before the map */
     color: #333;
 }
 
-/* Nearest Map Section */
-.nearest-map-section {
-    width: 90%;
-    margin: 30px auto;
-    text-align: center;
-}
-/* Nearest Map Section */
-.overview-map-section {
-    width: 90%;
-    margin: 30px auto;
-    text-align: center;
-}
-
-/* Search Section */
-.search-section {
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.search-section input,
-.search-section select {
-    width: 100%;
-    padding: 10px;
+/* Introductory Text */
+.intro-text {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
 }
 
-.search-btn {
-    background-color: #007bff;
-    color: white;
-    font-size: 18px;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
+/* 1:4 Layout for Filters & Map */
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    margin-top: 5px;
+    align-items: flex-start;
 }
 
-.search-btn:hover {
-    background-color: #0056b3;
-}
-
-/* Language Toggle Button */
-.language-switch {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.lang-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    margin: 0 5px;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 5px;
-}
-
-.lang-btn.active {
-    background-color: #0056b3;
-    font-weight: bold;
-}
-
-
-
-
-/* Heading (Filter) */
-h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
-}
-
-/* Contact Section */
-.contact-section {
-    width: 100%;
-    max-width: 600px;
-    margin: 50px auto;
+/* Left Column (Filters) */
+.left-column {
+    flex: 1;
     padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-/* Contact Form */
-#contactForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Two Small Input Boxes Side by Side */
-.input-group {
-    display: flex;
-    gap: 30px; /* Space between inputs */
-    width: 100%;
-}
-
-.input-box {
-    flex: 2; /* Each input takes half width */
-    display: flex;
-    flex-direction: column;
-}
-
-#contactForm label {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
     text-align: left;
 }
 
-/* Input Fields */
-#contactForm input {
+/* Right Column (Map) */
+.right-column {
+    flex: 4; /* 1:4 Ratio */
+    padding: 20px;
+}
+/* Filter Form */
+.filter-form {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+/* Small Section Title */
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 1px;
+    color: #333;
+    text-align: center;
+}
+
+
+/* Dropdown - Increased height */
+select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    height: 480px;  /* Adjusted height to display more items */
+    overflow-y: auto; /* Enables scrolling if needed */
+}
+
+/* Adjust the options inside the dropdown */
+select option {
+    padding: 8px;
     font-size: 16px;
 }
 
-/* Larger Textbox for Questions */
-#contactForm textarea {
+/* Map Section */
+.map-container {
     width: 100%;
+    height: 550px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px; /* Slightly adjusted margin */
+}
+
+/* Contact Container */
+.contact-container {
+    text-align: center;
+    width: 80%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* Page Title */
+.page-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 1px;
+}
+
+/* Contact Info */
+.contact-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+}
+
+.contact-info p {
+    font-size: 16px;
+    color: #555;
+}
+
+.contact-email {
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Contact Form */
+.contact-form-container {
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+/* Input Group */
+.input-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+/* Input Box */
+.input-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input & Textarea */
+.contact-form-container input,
+.contact-form-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.contact-form-container textarea {
     height: 100px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
     resize: vertical;
-    margin-top: 15px;
-    font-family: Arial, sans-serif; 
 }
 
-/* Contact Button */
+/* Send Email Button */
 .contact-btn {
     background-color: #007bff;
     color: white;
     font-size: 18px;
     padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     width: 100%;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .contact-btn:hover {
     background-color: #0056b3;
 }
 
+/* PIN Image */
+.pin-image {
+    margin-top: 30px;
+    display: flex;            /* Enable Flexbox */
+    justify-content: center;  /* Center horizontally */
+    align-items: center;      /* Center vertically (if needed) */
+    text-align: center;       /* Ensures text aligns correctly */
+    width: 100%;
+}
 
+.pin-image img {
+    width: auto;
+    height: 300px;
+    max-width: 100%;  /* Ensures it doesn’t overflow */
+}

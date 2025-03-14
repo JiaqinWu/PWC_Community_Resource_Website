@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include "navbar.html" %}
+
+    <!-- Language Toggle -->
+    <div class="language-switch">
+        <button onclick="setLanguage('en')" class="lang-btn active">English</button>
+        <button onclick="setLanguage('es')" class="lang-btn">Español</button>
+    </div>
+
+    <!-- Full-width Narrative Section -->
+    <div class="narrative-container">
+        <!-- Logo -->
+        <img src="{{ url_for('static', filename='logo1.png') }}" alt="PWC Logo" class="logo">
+
+        <h1 class="page-title"
+            data-en="Contact Us"
+            data-es="Contáctenos">
+            Contact Us
+        </h1>   
+    </div>
+
+    <!-- Contact Us Section -->
+    <div class="contact-container">
+        <!-- Contact Info -->
+        <div class="contact-info">
+            <p><strong data-en="Phone:" data-es="Teléfono:">Phone:</strong> (703) 792-6600</p>
+            <p><strong data-en="Email:" data-es="Correo Electrónico:">Email:</strong> 
+                <span class="contact-email">ocs@pwcgov.org</span>
+            </p>
+            <p><strong data-en="Location:" data-es="Ubicación:">Location:</strong> 
+                1 County Complex Ct., Woodbridge, VA, 22191
+            </p>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form-container">
+            <h2 class="contact-form-title"
+                data-en="Send Us a Message"
+                data-es="Envíenos un Mensaje">
+                Send Us a Message
+            </h2>
+
+            <form id="contactForm" onsubmit="sendEmail(); return false;">
+                <div class="input-group">
+                    <div class="input-box">
+                        <label for="name" data-en="Your Name:" data-es="Su Nombre:">Your Name:</label>
+                        <input type="text" id="name" name="name" 
+                            placeholder="Your name" 
+                            data-en="Your name" data-es="Su nombre" required>
+                    </div>
+
+                    <div class="input-box">
+                        <label for="email" data-en="Your Email:" data-es="Su Correo Electrónico:">Your Email:</label>
+                        <input type="email" id="email" name="email" 
+                            placeholder="Your email address" 
+                            data-en="Your email address" data-es="Su dirección de correo electrónico" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="phone" data-en="Phone Number:" data-es="Número de Teléfono:">Phone Number:</label>
+                    <input type="text" id="phone" name="phone" 
+                        placeholder="Your phone number" 
+                        data-en="Your phone number" data-es="Su número de teléfono" required>
+                </div>
+
+                <label for="message" data-en="What is your concern/question?" data-es="¿Cuál es su preocupación/pregunta?">
+                    What is your concern/question?
+                </label>
+                <textarea id="message" name="message" 
+                    placeholder="Enter your message here..." 
+                    data-en="Enter your message here..." 
+                    data-es="Ingrese su mensaje aquí..." required></textarea>
+
+                <button type="submit" class="contact-btn"
+                    data-en="Send Email" data-es="Enviar Correo Electrónico">
+                    Send Email
+                </button>
+            </form>
+        </div>
+
+        <!-- PIN Image -->
+        <div class="pin-image">
+            <img src="{{ url_for('static', filename='pin2.jpg') }}" alt="Location PIN">
+        </div>
+    </div>
+
+    <script>
+        function sendEmail() {
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var phone = document.getElementById("phone").value;
+            var message = document.getElementById("message").value;
+
+            var recipientEmail = "ocs@pwcgov.org"; // Your email
+            var subject = encodeURIComponent("New Inquiry from " + name);
+            
+            var body = encodeURIComponent(
+                "Name: " + name + "\n" +
+                "Email: " + email + "\n" +
+                "Phone: " + phone + "\n\n" +
+                "Concern/Question:\n" + message
+            );
+
+            window.location.href = "mailto:" + recipientEmail + "?subject=" + subject + "&body=" + body;
+        }
+
+        function setLanguage(lang) {
+            // Change text dynamically
+            document.querySelectorAll("[data-en]").forEach(element => {
+                element.innerHTML = element.getAttribute(`data-${lang}`);
+            });
+
+            // Change placeholders dynamically
+            document.querySelectorAll("[placeholder]").forEach(element => {
+                element.placeholder = element.getAttribute(`data-${lang}`);
+            });
+
+            // Toggle active button styling
+            document.querySelectorAll(".lang-btn").forEach(button => {
+                button.classList.remove("active");
+            });
+            document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add("active");
+        }
+    </script>
+</body>
+</html>
+
+

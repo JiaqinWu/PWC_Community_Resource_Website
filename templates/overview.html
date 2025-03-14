@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Overview Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include "navbar.html" %}
+    <img src="{{ url_for('static', filename='logo1.png') }}" alt="PWC Logo" class="logo">
+    <h1 class="page-title">Overview Map</h1>
+    
+    <!-- Filter Form with More Spacing -->
+    <form method="POST">
+        <label for="categories">Filter by Categories:</label>
+        <select name="categories" id="categories" multiple>
+            <option value="All" {% if "All" in selected_categories %}selected{% endif %}>All</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if category in selected_categories %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+
+    <!-- Increased space before the map -->
+    <div class="map-container">
+        {{ main_map | safe }}
+    </div>
+
+    <script>
+        document.getElementById("categories").addEventListener("change", function() {
+            this.form.submit();
+        });
+    </script>
+</body>
+</html>
