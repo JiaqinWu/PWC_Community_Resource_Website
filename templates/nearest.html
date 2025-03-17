@@ -4,13 +4,14 @@
     <title>Find Nearest Services</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
 </head>
-<body>
+<body onload="checkTutorial()">
     {% include "navbar.html" %}
 
     <!-- Language Toggle -->
     <div class="language-switch">
         <button onclick="setLanguage('en')" class="lang-btn active">English</button>
         <button onclick="setLanguage('es')" class="lang-btn">Español</button>
+        <button onclick="restartTutorial()" class="tutorial-restart-btn">Restart Tutorial</button>
     </div>
 
     <!-- Full-width Narrative Section -->
@@ -23,10 +24,10 @@
         </h1>
     </div>
 
-    <!-- 1:4 Layout Section -->
+    <!-- 1:3:1 Layout Section -->
     <div class="container">
         <!-- Left Column: Filter Section (1) -->
-        <div class="left-column">
+        <div class="left-column" id="left-column">
             <form method="POST" class="search-form">
                 <label for="user_address" 
                     data-en="Enter Address:" 
@@ -44,7 +45,7 @@
                 <label for="resource_type" 
                     data-en="Select Resource Type:" 
                     data-es="Seleccione Tipo de Recurso:">Select Resource Type:</label>
-                <select name="resource_type">
+                <select name="resource_type" class="dropdown-short" required>
                     {% for type in resource_types %}
                         <option value="{{ type }}">{{ type }}</option>
                     {% endfor %}
@@ -55,19 +56,140 @@
             </form>
         </div>
 
-        <!-- Right Column: Map Section (4) -->
-        <div class="right-column">
-            <div class="map-container">
+        <!-- Middle Column: Map Section (3) -->
+        <div class="middle-column" id="middle-column">
+            <div class="map-container" id="map-container">
                 {% if nearest_map %}
                     {{ nearest_map | safe }}
-                {% else %}
-                    <p data-en="No search has been performed yet." data-es="Aún no se ha realizado ninguna búsqueda."></p>
                 {% endif %}
             </div>
+        </div>
+
+        <!-- Right Column: Resource List (1) -->
+        <div class="right-column" id="right-column">
+            <h2 data-en="Filtered Resources" data-es="Recursos Filtrados">Filtered Resources</h2>
+            <ul id="resource-list">
+                {% if resource_list %}
+                    {% for resource in resource_list %}
+                        <li class="resource-item" data-lat="{{ resource.latitude }}" data-lon="{{ resource.longitude }}">
+                            <strong class="resource-name">{{ resource.ORGANIZATION }}</strong><br>
+                            <span class="resource-category">{{ resource.CATEGORY }} - {{ "%.2f"|format(resource.Distance) }} miles</span>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <p data-en="No resources found. Please enter an address and search." 
+                    data-es="No se encontraron recursos. Ingrese una dirección y busque.">
+                    No resources found. Please enter an address and search.
+                    </p>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+
+    <div id="tutorial-overlay">
+        <div class="tutorial-highlight"></div>
+        <div class="tutorial-box" id="tutorial-box">
+            <h2 id="tutorial-title">Welcome to the Nearest Resources Map!</h2>
+            <p id="tutorial-text">This tutorial will guide you through finding nearby services.</p>
+            <button onclick="nextStep()" id="next-btn">Next</button>
+            <button onclick="skipTutorial()" id="skip-btn">Skip</button>
         </div>
     </div>
 
     <script>
+
+let tutorialStep = 0;
+        const steps = [
+            { title: "Welcome!", text: "This guide will help you find nearby services.", element: null },
+            { title: "Enter Address", text: "Type your address here or use 'Use My Location' to auto-detect your location.", element: "left-column" },
+            { title: "Select a Category", text: "Choose a specific resource type from the dropdown.", element: "left-column" },
+            { title: "Search", text: "Click the 'Search' button to find the nearest services.", element: "left-column" },
+            { title: "Interactive Map", text: "This map will display the locations of your selected services.", element: "middle-column" },
+            { title: "Resource List", text: "This list shows available resources sorted by distance.", element: "right-column" },
+            { title: "Done!", text: "You're ready to explore! Click 'Done' to close this tutorial.", element: null }
+        ];
+
+        function checkTutorial() {
+            if (!localStorage.getItem("tutorialCompletedNearest")) {
+                document.getElementById("tutorial-overlay").style.display = "flex";
+                showStep();
+            }
+        }
+
+        function showStep() {
+            document.getElementById("tutorial-title").innerText = steps[tutorialStep].title;
+            document.getElementById("tutorial-text").innerText = steps[tutorialStep].text;
+
+            let highlightBox = document.querySelector(".tutorial-highlight");
+            let tutorialBox = document.getElementById("tutorial-box");
+
+            document.querySelectorAll(".highlight").forEach(el => el.classList.remove("highlight"));
+
+            if (steps[tutorialStep].element) {
+                let element = document.getElementById(steps[tutorialStep].element);
+                let rect = element.getBoundingClientRect();
+
+                // Position the highlight box over the selected element
+                highlightBox.style.display = "block";
+                highlightBox.style.top = `${rect.top + window.scrollY}px`;
+                highlightBox.style.left = `${rect.left}px`;
+                highlightBox.style.width = `${rect.width}px`;
+                highlightBox.style.height = `${rect.height}px`;
+
+                // Adjust tutorial box to be centered within the highlight box
+                let boxTop = rect.top + window.scrollY + (rect.height / 2) - (tutorialBox.offsetHeight / 2);
+                let boxLeft = rect.left + (rect.width / 2) - (tutorialBox.offsetWidth / 2);
+
+                // Ensure it stays within the viewport
+                let viewportHeight = window.innerHeight;
+                let viewportWidth = window.innerWidth;
+
+                if (boxTop + tutorialBox.offsetHeight > viewportHeight) {
+                    boxTop = rect.top + window.scrollY - tutorialBox.offsetHeight - 20;
+                }
+                if (boxLeft + tutorialBox.offsetWidth > viewportWidth) {
+                    boxLeft = viewportWidth - tutorialBox.offsetWidth - 20;
+                }
+
+                tutorialBox.style.top = `${boxTop}px`;
+                tutorialBox.style.left = `${boxLeft}px`;
+            } else {
+                highlightBox.style.display = "none";
+                tutorialBox.style.top = "50%";
+                tutorialBox.style.left = "50%";
+                tutorialBox.style.transform = "translate(-50%, -50%)";
+            }
+
+            if (tutorialStep === steps.length - 1) {
+                document.getElementById("next-btn").innerText = "Done";
+            } else {
+                document.getElementById("next-btn").innerText = "Next";
+            }
+        }
+
+        function nextStep() {
+            if (tutorialStep < steps.length - 1) {
+                tutorialStep++;
+                showStep();
+            } else {
+                document.getElementById("tutorial-overlay").style.display = "none";
+                localStorage.setItem("tutorialCompletedNearest", "true");
+            }
+        }
+
+        function skipTutorial() {
+            document.getElementById("tutorial-overlay").style.display = "none";
+            localStorage.setItem("tutorialCompletedNearest", "true");
+        }
+
+        function restartTutorial() {
+            localStorage.removeItem("tutorialCompletedNearest");
+            tutorialStep = 0;
+            document.getElementById("tutorial-overlay").style.display = "flex";
+            showStep();
+        }
+
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(sendCoordsToServer, showError);
@@ -99,24 +221,32 @@
         }
 
         function showError(error) {
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    alert("User denied the request for Geolocation.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    alert("Location information is unavailable.");
-                    break;
-                case error.TIMEOUT:
-                    alert("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    alert("An unknown error occurred.");
-                    break;
+                alert("Error getting location: " + error.message);
             }
+
+        function focusResource(lat, lon) {
+            fetch(`/focus_resource?lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("map-container").innerHTML = data.map;
+                } else {
+                    alert("Error focusing on the resource.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
         }
 
+        document.querySelectorAll('.resource-item').forEach(item => {
+            item.addEventListener('click', function() {
+                let lat = this.getAttribute('data-lat');
+                let lon = this.getAttribute('data-lon');
+                focusResource(lat, lon);
+            });
+        });
+
         function setLanguage(lang) {
-            // Change text dynamically
+            // Change text dynamically for all elements with data-en/data-es attributes
             document.querySelectorAll("[data-en]").forEach(element => {
                 element.innerHTML = element.getAttribute(`data-${lang}`);
             });
@@ -126,15 +256,33 @@
                 element.placeholder = element.getAttribute(`data-${lang}`);
             });
 
-            // Toggle active button styling
+            // Change dropdown options dynamically
+            document.querySelectorAll("select option").forEach(option => {
+                let englishText = option.getAttribute("data-en");
+                let spanishText = option.getAttribute("data-es");
+                if (englishText && spanishText) {
+                    option.innerText = lang === 'es' ? spanishText : englishText;
+                }
+            });
+
+            // Update the active button style
             document.querySelectorAll(".lang-btn").forEach(button => {
                 button.classList.remove("active");
             });
             document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add("active");
         }
+
+        // Run the function on page load (default to English)
+        document.addEventListener("DOMContentLoaded", () => {
+            setLanguage('en');
+        });
+
     </script>
+
+
 </body>
 </html>
+
 
 
 

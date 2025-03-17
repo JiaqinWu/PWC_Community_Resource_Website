@@ -4,13 +4,14 @@
     <title>Overview Map</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
+<body onload="checkTutorial()">
     {% include "navbar.html" %}
 
     <!-- Language Toggle Buttons (Upper Right Corner) -->
     <div class="language-switch">
         <button onclick="setLanguage('en')" class="lang-btn active">English</button>
         <button onclick="setLanguage('es')" class="lang-btn">Español</button>
+        <button onclick="restartTutorial()" class="tutorial-restart-btn">Restart Tutorial</button>
     </div>
 
     <!-- Full-width Narrative Section -->
@@ -21,27 +22,30 @@
         </h1>
 
         <p class="intro-text" 
-           data-en="Communities with access to resources are proven to be safer and more secure. 
-           OCS' Community Resource Map empowers residents to easily find vital services, promoting long-term resilience, 
-           connectivity, and well-being across the County."
+           data-en="Communities with greater resource access are proven to be safer and more secure. 
+                   OCS' Community Resource Map empowers residents to easily find vital services, promoting 
+                   long-term resilience, connectivity, and well-being across the County."
            data-es="Las comunidades con mayor acceso a recursos han demostrado ser más seguras y protegidas.
                    El Mapa de Recursos Comunitarios de OCS permite a los residentes encontrar fácilmente servicios esenciales, 
                    promoviendo la resiliencia, la conectividad y el bienestar en todo el condado.">
-                   Communities with access to resources are proven to be safer and more secure. 
-            OCS' Community Resource Map empowers residents to easily find vital services, promoting long-term resilience, 
-            connectivity, and well-being across the County.
+            Communities with greater resource access are proven to be safer and more secure. 
+            OCS' Community Resource Map empowers residents to easily find vital services, promoting 
+            long-term resilience, connectivity, and well-being across the County.
         </p>
 
         <p class="intro-text" 
-           data-en="OCS' Resource Map is a user-friendly tool designed to help you quickly locate essential resources, from food assistance and medical care
-            to clothing and other critical services. Explore available resources across the County using the Overview Map, or find the nearest support options
-             by entering your location in the Nearest Resources Map."
+           data-en="OCS' Resource Map is a user-friendly tool designed to help you quickly locate essential resources, 
+                   from food assistance and medical care to clothing and other critical services.
+                   Explore available resources across the County using the Overview Map, or find the nearest support 
+                   options by entering your location in the Nearest Resources Map."
            data-es="El Mapa de Recursos de OCS es una herramienta fácil de usar diseñada para ayudarle a encontrar rápidamente recursos esenciales, 
                    desde asistencia alimentaria y atención médica hasta ropa y otros servicios fundamentales.
                    Explore los recursos disponibles en todo el condado utilizando el Mapa General o encuentre las opciones de apoyo más cercanas 
                    ingresando su ubicación en el Mapa de Recursos Más Cercanos.">
-            OCS' Resource Map is a user-friendly tool designed to help you quickly locate essential resources, from food assistance and medical care to clothing and other critical services. 
-            Explore available resources across the County using the <strong>Overview Map</strong>, or find the nearest support options by entering your location in the <strong>Nearest Resources Map</strong>.
+            OCS' Resource Map is a user-friendly tool designed to help you quickly locate essential resources, 
+            from food assistance and medical care to clothing and other critical services.
+            Explore available resources across the County using the <strong>Overview Map</strong>, or find the nearest support 
+            options by entering your location in the <strong>Nearest Resources Map</strong>.
         </p>
     </div>
 
@@ -54,38 +58,186 @@
     <!-- 1:4 Layout Section -->
     <div class="container">
         <!-- Left Column: Filter Selection -->
-        <div class="left-column">
+        <div class="left-column" id="left-column">
             <form method="POST" class="filter-form">
                 <label for="categories" data-en="Filter by Categorie(s):" data-es="Filtrar por Categoría(s):">Filter by Categorie(s):</label>
+                <!-- Category Dropdown with English & Spanish Names -->
                 <select name="categories" id="categories" multiple size="10">
-                    <option value="All" {% if "All" in selected_categories %}selected{% endif %} 
+                    <option value="All" {% if "All" in selected_categories %}selected{% endif %}
                         data-en="All" data-es="Todos">All</option>
-                    {% for category in categories %}
-                        <option value="{{ category }}" {% if category in selected_categories %}selected{% endif %}
-                            data-en="{{ category }}" data-es="{{ category }}">{{ category }}</option>
+
+                    {% for category_en, category_es in zip(categories_en, categories_es) %}
+                        <option value="{{ category_en }}" {% if category_en in selected_categories %}selected{% endif %}
+                            data-en="{{ category_en }}" data-es="{{ category_es }}">
+                            {{ category_en }}
+                        </option>
                     {% endfor %}
                 </select>
             </form>
+            
         </div>
 
-        <!-- Right Column: Map -->
-        <div class="right-column">
-            <div class="map-container">
+        <!-- Middle Column: Map View (3) -->
+        <div class="middle-column" id="middle-column">
+            <div class="map-container" id="map-container">
                 {{ main_map | safe }}
             </div>
+        </div>
+
+        <!-- Right Column: Resource List (1) -->
+        <div class="right-column" id="right-column">
+            <h2 data-en="Resource List" data-es="Lista de Recursos">Resource List</h2>
+            <ul id="resource-list">
+                {% for resource in resource_list %}
+                    <li class="resource-item" data-lat="{{ resource.latitude }}" data-lon="{{ resource.longitude }}">
+                        <strong class="resource-name" 
+                                data-en="{{ resource.ORGANIZATION }}" 
+                                data-es="{{ resource.ORGANIZATION }}"> 
+                            {{ resource.ORGANIZATION }}
+                        </strong><br>
+                        <span class="resource-category" 
+                            data-en="{{ resource.CATEGORY }}" 
+                            data-es="{{ resource.CATEGORY }}">
+                            {{ resource.CATEGORY }}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+ 
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay">
+        <div class="tutorial-highlight"></div>
+        <div class="tutorial-box" id="tutorial-box">
+            <h2 id="tutorial-title">Welcome to the Community Resource Map!</h2>
+            <p id="tutorial-text">This tutorial will guide you through the key features of this app.</p>
+            <button onclick="nextStep()" id="next-btn">Next</button>
+            <button onclick="skipTutorial()" id="skip-btn">Skip</button>
         </div>
     </div>
 
     <script>
+        let tutorialStep = 0;
+        const steps = [
+            { title: "Welcome!", text: "This guide will help you use this map to find resources.", element: null },
+            { title: "Filter Resources", text: "Use this section to filter resources by category.", element: "left-column" },
+            { title: "Interactive Map", text: "This map displays the resources. Click on a marker to see details.", element: "middle-column" },
+            { title: "Resource List", text: "This list shows available resources based on your selection.", element: "right-column" },
+            { title: "Done!", text: "You're ready to explore! Click 'Done' to close this tutorial.", element: null }
+        ];
+
+        function checkTutorial() {
+            if (!localStorage.getItem("tutorialCompleted")) {
+                document.getElementById("tutorial-overlay").style.display = "flex";
+                showStep();
+            }
+        }
+
+        function showStep() {
+            document.getElementById("tutorial-title").innerText = steps[tutorialStep].title;
+            document.getElementById("tutorial-text").innerText = steps[tutorialStep].text;
+
+            let highlightBox = document.querySelector(".tutorial-highlight");
+            let tutorialBox = document.getElementById("tutorial-box");
+
+            document.querySelectorAll(".highlight").forEach(el => el.classList.remove("highlight"));
+
+            if (steps[tutorialStep].element) {
+                let element = document.getElementById(steps[tutorialStep].element);
+                let rect = element.getBoundingClientRect();
+
+                highlightBox.style.display = "block";
+                highlightBox.style.top = `${rect.top + window.scrollY}px`;
+                highlightBox.style.left = `${rect.left}px`;
+                highlightBox.style.width = `${rect.width}px`;
+                highlightBox.style.height = `${rect.height}px`;
+
+                // Position tutorial box intelligently
+                let boxTop = rect.bottom + 20;
+                let boxLeft = rect.left;
+                let viewportHeight = window.innerHeight;
+
+                // If the box would go off-screen, position it above the highlight instead
+                if (boxTop + tutorialBox.offsetHeight > viewportHeight) {
+                    boxTop = rect.top - tutorialBox.offsetHeight - 20;
+                }
+
+                tutorialBox.style.top = `${boxTop}px`;
+                tutorialBox.style.left = `${boxLeft}px`;
+            } else {
+                highlightBox.style.display = "none";
+                tutorialBox.style.top = "50%";
+                tutorialBox.style.left = "50%";
+                tutorialBox.style.transform = "translate(-50%, -50%)";
+            }
+
+            if (tutorialStep === steps.length - 1) {
+                document.getElementById("next-btn").innerText = "Done";
+            } else {
+                document.getElementById("next-btn").innerText = "Next";
+            }
+        }
+
+        function nextStep() {
+            if (tutorialStep < steps.length - 1) {
+                tutorialStep++;
+                showStep();
+            } else {
+                document.getElementById("tutorial-overlay").style.display = "none";
+                localStorage.setItem("tutorialCompleted", "true");
+            }
+        }
+
+        function skipTutorial() {
+            document.getElementById("tutorial-overlay").style.display = "none";
+            localStorage.setItem("tutorialCompleted", "true");
+        }
+
+        function restartTutorial() {
+            localStorage.removeItem("tutorialCompleted");
+            tutorialStep = 0;
+            document.getElementById("tutorial-overlay").style.display = "flex";
+            showStep();
+        }
+
         // Auto-submit filter form when selection changes
         document.getElementById("categories").addEventListener("change", function() {
             this.form.submit();
         });
 
-        // Function to switch between English and Spanish
+        // Function to update the map when selecting a resource from the list
+        function focusResource(lat, lon) {
+            fetch(`/focus_resource?lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("map-container").innerHTML = data.map;  // Update the map dynamically
+                } else {
+                    alert("Error focusing on the resource.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    
+        // Attach event listener to each resource item in the list
+        document.querySelectorAll('.resource-item').forEach(item => {
+            item.addEventListener('click', function() {
+                let lat = this.getAttribute('data-lat');
+                let lon = this.getAttribute('data-lon');
+                focusResource(lat, lon);
+            });
+        });
+
         function setLanguage(lang) {
+            // Change text content dynamically
             document.querySelectorAll("[data-en]").forEach(element => {
                 element.innerHTML = element.getAttribute(`data-${lang}`);
+            });
+
+            // Change dropdown options dynamically
+            document.querySelectorAll("option[data-en]").forEach(option => {
+                option.innerHTML = option.getAttribute(`data-${lang}`);
             });
 
             // Change placeholders dynamically
@@ -99,6 +251,9 @@
             });
             document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add("active");
         }
+
     </script>
+
+    
 </body>
 </html>

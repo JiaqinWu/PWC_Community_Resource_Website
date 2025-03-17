@@ -40,27 +40,27 @@ body {
     margin-bottom: 15px;
 }
 
-/* 1:4 Layout for Filters & Map */
+/* Overall Container for 1:3:1 Layout */
 .container {
     display: flex;
     width: 90%;
     max-width: 1200px;
-    margin-top: 5px;
+    margin-top: 10px;
     align-items: flex-start;
+    gap: 20px; /* Spacing between columns */
 }
 
 /* Left Column (Filters) */
 .left-column {
-    flex: 1;
+    flex: 1; /* Takes 1 part */
     padding: 20px;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-height: 450%;
 }
 
-/* Right Column (Map) */
-.right-column {
-    flex: 4; /* 1:4 Ratio */
-    padding: 20px;
-}
+
 /* Filter Form */
 .filter-form {
     background: #f4f4f4;
@@ -80,6 +80,81 @@ body {
 }
 
 
+
+/* Middle Column (Map) */
+.middle-column {
+    flex: 4; /* Takes 3 parts */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Right Column (Resource List) */
+.right-column {
+    flex: 1; /* Takes 1 part */
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-height: 450px; /* Prevents overflow */
+    overflow-y: auto; /* Enables scrolling if needed */
+}
+
+/* Resource List */
+#resource-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+/* Resource List Items */
+.resource-item {
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.resource-item:hover {
+    background: #f1f1f1;
+}
+
+/* Resource Item Name */
+.resource-name {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Resource Item Category */
+.resource-category {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+}
+
+
+/* Small Section Title */
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 1px;
+    color: #333;
+    text-align: center;
+}
+
+
 /* Dropdown - Increased height */
 select {
     width: 100%;
@@ -88,23 +163,27 @@ select {
     border-radius: 6px;
     font-size: 16px;
     margin-bottom: 10px;
-    height: 480px;  /* Adjusted height to display more items */
+    height: 400px;  /* Adjusted height to display more items */
     overflow-y: auto; /* Enables scrolling if needed */
 }
 
-/* Adjust the options inside the dropdown */
+/* Truncate long category names */
 select option {
-    padding: 8px;
-    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* Prevents wrapping */
+    max-width: 100%; /* Ensures it does not overflow */
+    display: block;
 }
+
 
 /* Map Section */
 .map-container {
     width: 100%;
-    height: 550px;
-    border-radius: 10px;
+    height: 700px;
+    border-radius: 5px;
     overflow: hidden;
-    margin-top: 10px; /* Slightly adjusted margin */
+    margin-top: 5px; /* Slightly adjusted margin */
 }
 
 /* Contact Container */
@@ -217,3 +296,61 @@ select option {
     height: 300px;
     max-width: 100%;  /* Ensures it doesn’t overflow */
 }
+
+/* Tutorial Overlay - Dark Background */
+#tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Tutorial Highlight Box */
+.tutorial-highlight {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border: 3px solid yellow;
+    box-shadow: 0 0 15px yellow;
+    transition: all 0.5s ease-in-out;
+    z-index: 10000;
+}
+
+/* Tutorial Box */
+.tutorial-box {
+    position: absolute;
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    width: 350px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+}
+
+/* Buttons */
+#next-btn, #skip-btn {
+    padding: 10px 15px;
+    margin: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#next-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+#skip-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+
