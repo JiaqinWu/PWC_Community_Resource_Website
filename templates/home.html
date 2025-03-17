@@ -153,18 +153,26 @@
                 highlightBox.style.width = `${rect.width}px`;
                 highlightBox.style.height = `${rect.height}px`;
 
-                // Position tutorial box intelligently
-                let boxTop = rect.bottom + 20;
-                let boxLeft = rect.left;
+                // Position tutorial box to the **right** of the highlighted element
+                let boxLeft = rect.right + 20; // Move it to the right of the element
+                let boxTop = rect.top + window.scrollY;
+
+                let viewportWidth = window.innerWidth;
                 let viewportHeight = window.innerHeight;
 
-                // If the box would go off-screen, position it above the highlight instead
+                // If the tutorial box overflows off the screen, move it to the left instead
+                if (boxLeft + tutorialBox.offsetWidth > viewportWidth) {
+                    boxLeft = rect.left - tutorialBox.offsetWidth - 20; // Move it to the left if needed
+                }
+
+                // If the tutorial box overflows at the bottom, move it up
                 if (boxTop + tutorialBox.offsetHeight > viewportHeight) {
                     boxTop = rect.top - tutorialBox.offsetHeight - 20;
                 }
 
                 tutorialBox.style.top = `${boxTop}px`;
                 tutorialBox.style.left = `${boxLeft}px`;
+                tutorialBox.style.transform = "none"; // Remove centering transform
             } else {
                 highlightBox.style.display = "none";
                 tutorialBox.style.top = "50%";
@@ -178,6 +186,7 @@
                 document.getElementById("next-btn").innerText = "Next";
             }
         }
+
 
         function nextStep() {
             if (tutorialStep < steps.length - 1) {

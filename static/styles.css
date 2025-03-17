@@ -297,7 +297,8 @@ select option {
     max-width: 100%;  /* Ensures it doesn’t overflow */
 }
 
-/* Tutorial Overlay - Dark Background */
+
+/* Tutorial Overlay */
 #tutorial-overlay {
     position: fixed;
     top: 0;
@@ -319,23 +320,25 @@ select option {
     box-shadow: 0 0 15px yellow;
     transition: all 0.5s ease-in-out;
     z-index: 10000;
+    pointer-events: none;
 }
 
 /* Tutorial Box */
 .tutorial-box {
     position: absolute;
     background: white;
-    padding: 20px;
+    padding: 15px;
     text-align: center;
     border-radius: 8px;
-    width: 350px;
+    width: 320px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 10001;
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out;
 }
 
 /* Buttons */
 #next-btn, #skip-btn {
-    padding: 10px 15px;
+    padding: 8px 12px;
     margin: 10px;
     border: none;
     cursor: pointer;
@@ -351,6 +354,4 @@ select option {
     background-color: #dc3545;
     color: white;
 }
-
-
 
