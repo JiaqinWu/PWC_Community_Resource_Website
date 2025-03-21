@@ -222,7 +222,7 @@ def home():
         categories_es=categories_es,
         selected_categories=selected_categories,
         resource_list=resource_list,
-        zip=zip  # ✅ Pass zip function explicitly
+        zip=zip  
     )
 
 
@@ -239,7 +239,7 @@ def focus_resource():
     # Find the matching resource
     selected_resource = df2[(df2["latitude"] == float(lat)) & (df2["longitude"] == float(lon))].iloc[0]
 
-    # Recreate the map focusing on this resource
+    # Create the map focusing on this resource
     m = folium.Map(location=[float(lat), float(lon)], zoom_start=15)
 
     icon_symbol, icon_color = ICON_MAP.get(selected_resource["CATEGORY"], ("info-circle", "gray"))
